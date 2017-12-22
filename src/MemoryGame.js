@@ -105,7 +105,7 @@ class MemoryGame {
             this.pairsRemaining--;
 
             const currentPlayer = this.players[this.currentPlayerTurn];
-            this.scores[currentPlayer] += this.calculateScore();
+            this.scores[currentPlayer] += this.isTwoPlayer ? 1 : this.calculateScore(); // Two-player, 1 point for finding a match
         }
 
         return isMatch;

@@ -50,6 +50,7 @@ class App extends Component {
 			FIVE: 300,
 			SEVEN: 420,
 			TEN: 600,
+			NONE: null,
 		};
 
 		// Difficulties for board size
@@ -168,6 +169,7 @@ class App extends Component {
 			case this.pages.GAME:
 				return (
 					<GamePageComponent
+						availableDifficulties={this.difficulty}
 						timeLimit={this.state.timeLimit}
 						boardSize={this.state.difficulty}
 						waitTime={this.flipWaitTime}

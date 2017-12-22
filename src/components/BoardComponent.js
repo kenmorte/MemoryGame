@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 import { black, blue500, white, green500 } from 'material-ui/styles/colors';
+import { styleMerge } from '../helpers/helpers';
 
 const styles = {
     boardContainer: {
@@ -46,7 +47,7 @@ const styles = {
  *      Otherwise, a black highlighted number indicate that its pair has already been found.
  */
 const MemoryCard = (props) => {
-    const { value, isFlipped, isHighlighted, boardLength, onClick, i, j } = props;
+    const { value, isFlipped, isHighlighted, boardLength, availableDifficulties, onClick, i, j } = props;
 
     // Inline style object for the size of a single cell in the board
     const sizeStyle = {
@@ -55,9 +56,14 @@ const MemoryCard = (props) => {
     };
 
     // Calculated inline styles for card based on size/flipped status
-    const style = Object.assign({}, styles.cardContainer, sizeStyle);
-    const cardStyle = Object.assign({}, styles.card, {cursor: isFlipped ? 'default' : 'pointer'});
-    const cardValueStyle = Object.assign({}, styles.cardValue, {visibility: isFlipped ? 'visible' : 'hidden'});
+    const style = styleMerge({}, styles.cardContainer, sizeStyle);
+    const cardStyle = styleMerge({}, styles.card, {cursor: isFlipped ? 'default' : 'pointer'});
+    const cardValueStyle = styleMerge({}, styles.cardValue, {visibility: isFlipped ? 'visible' : 'hidden'});
+    const cardValueTextStyle = styleMerge({}, styles.cardValueText);
+    
+    if (boardLength === availableDifficulties.EASY) cardValueTextStyle.fontSize = '2.5em';
+    else if (boardLength === availableDifficulties.MEDIUM) cardValueTextStyle.fontSize = '2.5em';
+    else cardValueTextStyle.fontSize = '1.8em';
 
     // Highlight the current cards that are trying to be matched
     if (isHighlighted) cardValueStyle.color = green500;
@@ -66,7 +72,7 @@ const MemoryCard = (props) => {
         <div style={style} onClick={() => onClick(i,j)}>
             <Paper style={cardStyle} zDepth={2} >
                 <div style={cardValueStyle}>
-                    <span style={styles.cardValueText}>{value}</span>
+                    <span style={cardValueTextStyle}>{value}</span>
                 </div>
             </Paper>
         </div>
@@ -95,6 +101,7 @@ class BoardComponent extends Component {
                         i={i}
                         j={j}
                         value={value}
+                        availableDifficulties={this.props.availableDifficulties}
                         isFlipped={this.props.game.isCardFlipped(i, j)}
                         isHighlighted={this.props.game.isCardPartOfTurn(i, j)}
                         boardLength={board.length}

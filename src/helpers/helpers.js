@@ -3,6 +3,7 @@
  * @param {Number} seconds - integer time in seconds
  */
 export function getTimeStr(seconds) {
+    if (seconds === null) return 'N/A';
     let res = '';
 
     const minutes = Math.floor(seconds / 60);
@@ -17,4 +18,12 @@ export function getTimeStr(seconds) {
     else { res += seconds.toFixed(); }
 
     return res;
+}
+
+/**
+ * Returns a copy of all inline styles merged into one inline-style object based on properties.
+ * @param {Object[]} args - list of inline-style objects
+ */
+export function styleMerge(...args) {
+    return Object.assign({}, ...args);
 }

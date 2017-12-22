@@ -207,6 +207,7 @@ class SettingsPageComponent extends Component {
                                 <MenuItem value={this.props.availableTimeLimits.FIVE} primaryText="5 minutes" />
                                 <MenuItem value={this.props.availableTimeLimits.SEVEN} primaryText="7 minutes" />
                                 <MenuItem value={this.props.availableTimeLimits.TEN} primaryText="10 minutes" />
+                                <MenuItem value={this.props.availableTimeLimits.NONE} primaryText="Unlimited" />
                             </SelectField>
                         </SettingsItem>
                     </List>

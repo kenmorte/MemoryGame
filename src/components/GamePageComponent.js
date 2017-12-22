@@ -11,7 +11,7 @@ import MoreVert from 'material-ui/svg-icons/navigation/more-vert';
 import { black, green300 } from 'material-ui/styles/colors';
 import BoardComponent from './BoardComponent';
 import MemoryGame from '../MemoryGame';
-import { getTimeStr } from '../helpers/helpers';
+import { getTimeStr, styleMerge } from '../helpers/helpers';
 
 
 const styles = {
@@ -73,6 +73,11 @@ const styles = {
     },
 };
 
+/**
+ * TopBarLabel component
+ * Represents the two top-bottom pair labels present on the top bar for a game page.
+ * An example of this pair is "Player 1 Score:" and "15233", where the second represents player one's score.
+ */
 const TopBarLabel = (props) => {
     const { topLabel, bottomLabel, left, right, isCenter, isHighlighted } = props;
     const style = {
@@ -85,7 +90,7 @@ const TopBarLabel = (props) => {
         style.position = 'relative';
         style.margin = 'auto';
     }
-    const topLabelStyle = Object.assign({}, styles.topBarLabelSpan);
+    const topLabelStyle = styleMerge({}, styles.topBarLabelSpan);
     if (isHighlighted) topLabelStyle.color = green300;
 
     return (
@@ -96,6 +101,10 @@ const TopBarLabel = (props) => {
     );
 };
 
+/**
+ * GamePageComponent
+ * Represents the page and content for the game board for the UI.
+ */
 class GamePageComponent extends Component {
     constructor(props) {
         super(props);
@@ -145,6 +154,9 @@ class GamePageComponent extends Component {
         this.mounted = false;
     }
 
+    /**
+     * Fired when options menu (more-vertical icon) is clicked.
+     */
     handleOpenOptionsMenu = (event) => {
         // This prevents ghost click
         event.preventDefault();
@@ -155,26 +167,44 @@ class GamePageComponent extends Component {
         });
     }
 
+    /**
+     * Fired when options menu (more-vertical icon) is closed.
+     */
     handleCloseOptionsMenu = () => {
         this.setState({showOptionsMenu: false});
     }
 
+    /**
+     * Fired when reset game option is clicked on menu.
+     */
     handleOpenResetDialog = () => {
         this.setState({showResetDialog: true, showOptionsMenu: false});
     }
 
+    /**
+     * Fired when reset game option is closed.
+     */
     handleCloseResetDialog = () => {
         this.setState({showResetDialog: false});
     }
 
+    /**
+     * Fired when quit game option is clicked on menu.
+     */
     handleOpenQuitDialog = () => {
         this.setState({showQuitDialog: true, showOptionsMenu: false});
     }
 
+    /**
+     * Fired when quit game option is closed.
+     */
     handleCloseQuitDialog = () => {
         this.setState({showQuitDialog: false});
     }
 
+    /**
+     * Fired when game over dialog is closed.
+     */
     handleCloseGameOverDialog = () => {
         const game = this.state.game;
         
@@ -185,6 +215,9 @@ class GamePageComponent extends Component {
         this.setState({showGameOverDialog: false});
     }
 
+    /**
+     * Resets current game status to all cards flipped close and points reset.
+     */
     handleResetGame = () => {
         const game = this.state.game;
 
@@ -207,6 +240,9 @@ class GamePageComponent extends Component {
         }, () => this.initializeTimer());
     }
 
+    /**
+     * Fired when a memory card is clicked, and doing actions such as if the card should flip or not.
+     */
     handleCardClick = (i, j) => {
         const game = this.state.game;
 
@@ -214,6 +250,7 @@ class GamePageComponent extends Component {
             const isFirstFlip = game.isFirstFlip();
             const isMatch = game.flipCard(i, j);
             const isGameOver = game.isGameOver();
+            const isSinglePlayer = this.props.isSinglePlayer;
 
             if (isGameOver) {
                 if (this.timeInterval) clearInterval(this.timeInterval);
@@ -226,6 +263,7 @@ class GamePageComponent extends Component {
                     this.setState({boardPaused: true}, () => {
                         setTimeout(() => {
                             game.resetFlippedCards();
+                            if (!isSinglePlayer) game.changeTurn();
                             this.setState({game, boardPaused: false});
                         }, this.props.waitTime);
                     });
@@ -238,6 +276,9 @@ class GamePageComponent extends Component {
         }
     }
 
+    /**
+     * Repositions the top labels to be in the middle of the top bar.
+     */
     repositionLabelContainer = () => {
         if (!this.labelContainer) return;
 
@@ -249,7 +290,11 @@ class GamePageComponent extends Component {
         this.setState({labelContainerLeft});
     }
 
+    /**
+     * Initializes timer for game by starting an interval to fire every 1 second to update the timer.
+     */
     initializeTimer = () => {
+        if (this.state.timeRemaining === null) return;
         this.timeInterval = setInterval(() => {
             if (this.state.timeRemaining <= 0) {
                 if (this.mounted) this.setState({boardPaused: true, showGameOverDialog: true});
@@ -269,6 +314,11 @@ class GamePageComponent extends Component {
         }, 1000);
     }
 
+    /**
+     * Returns a string for the current game over status. Cases handled include:
+     *  -   Time up
+     *  -   All cards flipped
+     */
     getGameOverStr() {
         const winner = this.state.game.getWinner();
         const isGameOver = this.state.game.isGameOver();
@@ -287,7 +337,7 @@ class GamePageComponent extends Component {
     }
 
     render() {
-        const labelContainerStyle = Object.assign({}, styles.topBarLabelsContainer, {left: this.state.labelContainerLeft});
+        const labelContainerStyle = styleMerge({}, styles.topBarLabelsContainer, {left: this.state.labelContainerLeft});
         const resetActions = [
             <FlatButton
                 label="Cancel"
@@ -362,6 +412,7 @@ class GamePageComponent extends Component {
                 <div style={styles.boardContainer}>
                     <BoardComponent 
                         game={this.state.game} 
+                        availableDifficulties={this.props.availableDifficulties}
                         onCardClick={this.handleCardClick}
                     />
                 </div>
