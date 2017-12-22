@@ -91,7 +91,7 @@ class MemoryGame {
         }
 
         // Second card flipped, so increment # of tries
-        this.currentTries++;
+        this.currentTries += 2;
         
         const i1 = this.currentOpenedCard[0];
         const j1 = this.currentOpenedCard[1];
