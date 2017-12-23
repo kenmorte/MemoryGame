@@ -4,13 +4,9 @@
 3) `npm start`
 
 ## Running the App
-There are two ways to run the app. Following are two ways:<br>
 **Method 1 (Running on local machine)**
 1) Follow installation process above, if not already complete.
 2) Point browser to `localhost:3000` for URL link.
-
-**Method 2 (Running on Github instance)**
-1) Point browser to 
 
 ## Rules of the Game
 **Main Rules**
